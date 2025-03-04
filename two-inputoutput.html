@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Recipes</title>
+    <style>
+              body {
+            font-family: 'Pixelify Sans', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #c0c0c0;
+            image-rendering: pixelated;
+            border: 4px solid black;
+        }
+
+        h2 {
+            font-size: 24px;
+            background: black;
+            color: white;
+            padding: 10px;
+            border: 3px solid white;
+            text-transform: uppercase;
+        }
+
+        input[type="text"] {
+            width: 120px;
+            height: 40px;
+            text-align: center;
+            font-size: 20px;
+            margin: 10px;
+            border: 4px solid black;
+            background: white;
+            color: black;
+            font-family: 'Pixelify Sans', sans-serif;
+            box-shadow: 4px 4px black;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #ffcc00;
+            color: black;
+            border: 4px solid black;
+            cursor: pointer;
+            box-shadow: 4px 4px black;
+            font-family: 'Pixelify Sans', sans-serif;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background-color: #ffaa00;
+        }
+
+        img {
+            margin-top: 20px;
+            max-width: 300px;
+            image-rendering: pixelated;
+            border: 4px solid black;
+            display: none;
+        }
+
+        #hint {
+            font-size: 16px;
+            color: black;
+            margin-top: 10px;
+            background: white;
+            padding: 5px;
+            border: 3px solid black;
+        }
+    </style>
+</head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+<body>
+    <p id="hint">
+        Hint: Try ingredients like <strong>egg, milk, leek, dandelion, cheese, pepper, vinegar</strong>! <br>
+        Possible recipes you can unlock: <br>
+        🍳 <strong>Omelet</strong>: egg + ? <br>
+        🥗 <strong>Salad</strong>: ? + leek <br>
+        🧀 <strong>Cheese</strong>: ? x2 <br>
+        🌶️ <strong>Pepper Poppers</strong>: ? + vinegar <br>
+        🍳 <strong>Fried Egg</strong>: egg x?
+    </p>
+    <h2>Find Recipes for What’s Left in Your Fridge</h2>
+    <input type="text" id="charInput1" placeholder="Milk">
+    <input type="text" id="charInput2" placeholder="Egg">
+    <button onclick="displayImage()">Start Cook</button>
+    <p id="message"></p>
+
+    <img id="ingredientImage1" src="" alt="Ingredient 1">
+    <img id="ingredientImage2" src="" alt="Ingredient 2">
+    <img id="displayedImage" src="" alt="Recipe" style="display: none;">
+
+    <script>
+        function displayImage() {
+            const ingredient1 = document.getElementById("charInput1").value.toLowerCase();
+            const ingredient2 = document.getElementById("charInput2").value.toLowerCase();
+
+            const imgIngredient1 = document.getElementById("ingredientImage1");
+            const imgIngredient2 = document.getElementById("ingredientImage2");
+            const imgRecipe = document.getElementById("displayedImage");
+
+            // 食材图片映射
+            const ingredientImages = {
+                "egg": "images/20160305090133!Egg.png",
+                "milk": "images/Milk.png",
+                "leek": "images/Leek.png",
+                "cheese": "images/Cheese.png",
+                "dandelion": "images/Dandelion.png",
+                "pepper": "images/Hot_Pepper.png",
+                "vinegar": "images/Vinegar.png",
+                "leek": "images/Leek.png",
+
+            };
+
+            // 菜品图片映射
+            const recipeImages = {
+                "milk,egg": "images/Omelet.png",
+                "egg,milk": "images/Omelet.png",
+                "dandelion,leek": "images/Salad.png",
+                 "leek,dandelion": "images/Salad.png",
+                 "milk,milk": "images/Cheese.png",
+                 "pepper,vinegar": "images/Pepper_Poppers.png",
+                 "vinegar,pepper": "images/Pepper_Poppers.png",
+                 "egg,egg": "images/Fried_Egg.png",
+
+                
+                
+            };
+
+            // 清除所有图片
+            imgIngredient1.style.display = "none";
+            imgIngredient2.style.display = "none";
+            imgRecipe.style.display = "none";
+
+            // 如果输入了两个食材，显示菜品
+            const sortedKey = [ingredient1, ingredient2].sort().join(",");
+            if (recipeImages[sortedKey]) {
+                imgRecipe.src = recipeImages[sortedKey];
+                imgRecipe.style.display = "block";
+            } else {
+                // 显示单独的食材图片
+                if (ingredientImages[ingredient1]) {
+                    imgIngredient1.src = ingredientImages[ingredient1];
+                    imgIngredient1.style.display = "block";
+                }
+                if (ingredientImages[ingredient2]) {
+                    imgIngredient2.src = ingredientImages[ingredient2];
+                    imgIngredient2.style.display = "block";
+                }
+            }
+        }
+    </script>
+    <script>
+        function displayImage() {
+    const ingredient1 = document.getElementById("charInput1").value.toLowerCase();
+    const ingredient2 = document.getElementById("charInput2").value.toLowerCase();
+
+    const imgIngredient1 = document.getElementById("ingredientImage1");
+    const imgIngredient2 = document.getElementById("ingredientImage2");
+    const imgRecipe = document.getElementById("displayedImage");
+    const message = document.getElementById("message"); // 获取消息元素
+
+    // 食材图片映射
+    const ingredientImages = {
+                "egg": "images/20160305090133!Egg.png",
+                "milk": "images/Milk.png",
+                "leek": "images/Leek.png",
+                "cheese": "images/Cheese.png",
+                "dandelion": "images/Dandelion.png",
+                "pepper": "images/Hot_Pepper.png",
+                "vinegar": "images/Vinegar.png",
+                "leek": "images/Leek.png",
+
+            };
+
+    // 菜品图片映射
+    const recipeImages = {
+                "milk,egg": "images/Omelet.png",
+                "egg,milk": "images/Omelet.png",
+                "dandelion,leek": "images/Salad.png",
+                 "leek,dandelion": "images/Salad.png",
+                 "milk,milk": "images/Cheese.png",
+                 "pepper,vinegar": "images/Pepper_Poppers.png",
+                 "vinegar,pepper": "images/Pepper_Poppers.png",
+                 "egg,egg": "images/Fried_Egg.png",
+
+                
+                
+            };
+
+    // 清除所有图片
+    imgIngredient1.style.display = "none";
+    imgIngredient2.style.display = "none";
+    imgRecipe.style.display = "none";
+    message.style.display = "none"; // 隐藏消息
+    message.textContent = ""; // 清空文本
+
+    // 如果输入了两个食材，显示菜品
+    const sortedKey = [ingredient1, ingredient2].sort().join(",");
+    if (recipeImages[sortedKey]) {
+        imgRecipe.src = recipeImages[sortedKey];
+        imgRecipe.style.display = "block";
+        message.textContent = "🎉 Congratulations! You’ve unlocked a new recipe!";
+        message.style.display = "block";
+    } else {
+        // 显示单独的食材图片
+        let foundIngredient = false;
+        if (ingredientImages[ingredient1]) {
+            imgIngredient1.src = ingredientImages[ingredient1];
+            imgIngredient1.style.display = "block";
+            foundIngredient = true;
+        }
+        if (ingredientImages[ingredient2]) {
+            imgIngredient2.src = ingredientImages[ingredient2];
+            imgIngredient2.style.display = "block";
+            foundIngredient = true;
+        }
+
+        // 如果只显示了食材，给出提示
+        if (foundIngredient) {
+            message.textContent = "❌ No matching recipe found. Try another combination!";
+            message.style.display = "block";
+        }
+    }
+}
+    </script>
+</body>
+</html>
