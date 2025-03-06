@@ -54,14 +54,6 @@
             cursor: default;
         }
 
-        #changeChoices {
-            background-color: #ff6666;
-        }
-
-        #changeChoices:hover {
-            background-color: #ff4444;
-        }
-
         #selectionHint {
             font-style: italic;
             margin-top: 10px;
@@ -84,14 +76,11 @@
 <body>
     <div class="receipt">
         <h2>🛒 Grocery Receipt</h2>
-        <p id="availableIngredients">Loading ingredients...</p>
+        <p>Select your first ingredient:</p>
         <div id="ingredientButtons"></div>
-        <button id="changeChoices" class="ingredient" onclick="loadFirstChoices()">🔄 Change Choices</button>
 
         <p id="selectionHint" style="display: none;">Now choose the second ingredient!</p>
-
         <div id="secondChoiceContainer"></div>
-
         <p id="message"></p>
 
         <div id="unlockedRecipes" style="display: none;">
@@ -101,98 +90,94 @@
     </div>
 
     <script>
-        const allIngredients = ["egg", "milk", "leek", "dandelion", "cheese", "pepper", "vinegar"];
+        const ingredient1List = ["egg", "rice", "beef", "onion"];
+        const ingredient2List = ["mushroom", "pepper", "milk", "fish"];
         const recipes = {
+            "egg,mushroom": "Omelet",
+            "rice,mushroom": "Risotto",
+            "beef,mushroom": "Beef with Mushrooms",
+            "onion,mushroom": "Sautéed Mushrooms",
+            "egg,pepper": "Pepper Poppers",
+            "rice,pepper": "Stuffed Pepper",
+            "beef,pepper": "Spicy Burger",
+            "onion,pepper": "Fajitas",
             "egg,milk": "Omelet",
-            "dandelion,leek": "Salad",
-            "milk,milk": "Cheese",
-            "pepper,vinegar": "Pepper Poppers",
-            "egg,egg": "Fried Egg"
+            "rice,milk": "Rice Pudding",
+            "beef,milk": "Survival Burger",
+            "onion,milk": "Glazed Yams",
+            "egg,fish": "Strange Bun",
+            "rice,fish": "Maki Roll",
+            "beef,fish": "Surf 'n' Turf",
+            "onion,fish": "Fish Stew"
         };
 
         let selectedIngredient = null;
-        let unlockedRecipes = [];
 
         function loadFirstChoices() {
-            let availableIngredients = allIngredients.sort(() => 0.5 - Math.random()).slice(0, 3);
-            document.getElementById("availableIngredients").innerText = `You have: ${availableIngredients.join(", ")}`;
-
             const container = document.getElementById("ingredientButtons");
             container.innerHTML = "";
-            availableIngredients.forEach(ingredient => {
+            ingredient1List.forEach(ingredient => {
                 let button = document.createElement("button");
                 button.innerText = ingredient;
                 button.className = "ingredient";
                 button.onclick = () => selectFirstIngredient(ingredient, button);
                 container.appendChild(button);
             });
-
-            document.getElementById("selectionHint").style.display = "none";
-            document.getElementById("secondChoiceContainer").innerHTML = "";
-            document.getElementById("message").innerText = "";
-            selectedIngredient = null;
         }
 
         function selectFirstIngredient(ingredient, button) {
             selectedIngredient = ingredient;
-            button.classList.add("selected"); // 标记已选
-            button.onclick = null; // 禁止再次点击
-
+            document.querySelectorAll(".ingredient").forEach(btn => btn.classList.remove("selected"));
+            button.classList.add("selected");
             document.getElementById("selectionHint").style.display = "block";
-
-            loadSecondChoices(ingredient);
+            loadSecondChoices();
         }
 
-        function loadSecondChoices(firstIngredient) {
-            let validPairings = Object.keys(recipes).filter(pair => pair.includes(firstIngredient));
-            let correctSecondIngredient = validPairings.length > 0 ? validPairings[0].replace(firstIngredient, "").replace(",", "") : null;
-
-            let otherChoices = allIngredients.filter(i => i !== firstIngredient && i !== correctSecondIngredient)
-                                            .sort(() => 0.5 - Math.random()).slice(0, 2);
-
-            let secondChoices = correctSecondIngredient ? [correctSecondIngredient, ...otherChoices].sort(() => 0.5 - Math.random()) : otherChoices.slice(0, 3);
-
+        function loadSecondChoices() {
             const container = document.getElementById("secondChoiceContainer");
             container.innerHTML = "";
-
-            secondChoices.forEach(ingredient => {
+            ingredient2List.forEach(ingredient => {
                 let button = document.createElement("button");
                 button.innerText = ingredient;
                 button.className = "ingredient";
-                button.onclick = () => checkRecipe(selectedIngredient, ingredient);
+                button.onclick = () => selectSecondIngredient(ingredient);
                 container.appendChild(button);
             });
         }
 
-        function checkRecipe(ingredient1, ingredient2) {
-            let pair = [ingredient1, ingredient2].sort().join(",");
-            let recipeName = recipes[pair];
-
-            if (recipeName) {
-                document.getElementById("message").innerText = `✅ You made ${recipeName}!`;
-
-                if (!unlockedRecipes.includes(`${ingredient1} + ${ingredient2} = ${recipeName}`)) {
-                    unlockedRecipes.push(`${ingredient1} + ${ingredient2} = ${recipeName}`);
-                    updateUnlockedRecipes();
-                }
-            } else {
-                document.getElementById("message").innerText = "❌ No recipe found.";
+        function selectSecondIngredient(secondIngredient) {
+            const key = `${selectedIngredient},${secondIngredient}`;
+            const recipe = recipes[key] || "No matching recipe found.";
+            
+            document.getElementById("message").innerText = `Result: ${recipe}`;
+            
+            if (recipes[key]) {
+                document.getElementById("unlockedRecipes").style.display = "block";
+                const list = document.getElementById("recipeList");
+                let listItem = document.createElement("li");
+                listItem.innerText = recipe;
+                list.appendChild(listItem);
             }
         }
 
-        function updateUnlockedRecipes() {
-            const list = document.getElementById("recipeList");
-            list.innerHTML = "";
-            unlockedRecipes.forEach(recipe => {
-                let li = document.createElement("li");
-                li.innerText = recipe;
-                list.appendChild(li);
-            });
-
-            document.getElementById("unlockedRecipes").style.display = "block";
-        }
-
         loadFirstChoices();
+    </script>
+    <script>
+        function selectSecondIngredient(secondIngredient) {
+    const key = `${selectedIngredient},${secondIngredient}`;
+    const recipe = recipes[key] || "No matching recipe found.";
+    
+    document.getElementById("message").innerText = `Result: ${recipe}`;
+    
+    if (recipes[key]) {
+        document.getElementById("unlockedRecipes").style.display = "block";
+        const list = document.getElementById("recipeList");
+        let listItem = document.createElement("li");
+        listItem.innerText = `${selectedIngredient} + ${secondIngredient} = ${recipe}`;
+        list.appendChild(listItem);
+    }
+}
+
     </script>
 </body>
 </html>
